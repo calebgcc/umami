@@ -10,6 +10,7 @@ export function useRealtimeQuery(websiteId: string, { paused = false }: { paused
       return get(`/realtime/${websiteId}`);
     },
     enabled: !!websiteId,
+    // A paused view keeps showing its last data instead of polling.
     refetchInterval: paused ? false : REALTIME_INTERVAL,
   });
 
