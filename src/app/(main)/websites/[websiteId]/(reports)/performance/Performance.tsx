@@ -21,6 +21,7 @@ import { LoadingPanel } from '@/components/common/LoadingPanel';
 import { Panel } from '@/components/common/Panel';
 import {
   useBarDrillDown,
+  useChartAnnotations,
   useLocale,
   useMessages,
   usePerformanceChartQuery,
@@ -100,6 +101,7 @@ export function Performance({ websiteId, startDate, endDate, unit }: Performance
   const { t, labels } = useMessages();
   const { locale, dateLocale } = useLocale();
   const handleBarClick = useBarDrillDown(unit, true);
+  const { annotations, onAnnotationClick } = useChartAnnotations(websiteId, unit);
 
   const queryParams = { websiteId, startDate, endDate, unit };
   const stats = usePerformanceStatsQuery(queryParams);
@@ -238,6 +240,8 @@ export function Performance({ websiteId, startDate, endDate, unit }: Performance
                 }}
                 height="400px"
                 onBarClick={handleBarClick}
+                annotations={annotations}
+                onAnnotationClick={onAnnotationClick}
               />
             </Column>
           </Panel>

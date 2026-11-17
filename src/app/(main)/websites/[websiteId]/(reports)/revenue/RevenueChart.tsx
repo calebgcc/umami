@@ -1,12 +1,14 @@
 import { colord } from 'colord';
 import { useCallback, useMemo } from 'react';
 import { BarChart } from '@/components/charts/BarChart';
-import { useBarDrillDown, useLocale, useMessages } from '@/components/hooks';
+import { useBarDrillDown, useChartAnnotations, useLocale, useMessages } from '@/components/hooks';
 import { renderDateLabels } from '@/lib/charts';
 import { CHART_COLORS } from '@/lib/constants';
 import { DATE_FORMATS, DATE_FUNCTIONS, formatDate, generateTimeSeries } from '@/lib/date';
 
 export interface RevenueChartProps {
+  /** Shows the website's annotations on the chart. */
+  websiteId?: string;
   data: { x: string; t: string; y: number; count: number }[];
   mode?: 'period' | 'cumulative';
   unit: string;
@@ -17,6 +19,7 @@ export interface RevenueChartProps {
 }
 
 export function RevenueChart({
+  websiteId,
   data,
   mode = 'period',
   unit,
@@ -27,6 +30,7 @@ export function RevenueChart({
 }: RevenueChartProps) {
   const { t, labels } = useMessages();
   const handleBarClick = useBarDrillDown(unit, allowBarDrill);
+  const { annotations, onAnnotationClick } = useChartAnnotations(websiteId, unit);
   const { locale, dateLocale } = useLocale();
   const isCumulative = mode === 'cumulative';
 
@@ -140,6 +144,8 @@ export function RevenueChart({
       renderXLabel={renderXLabel}
       height="400px"
       onBarClick={handleBarClick}
+      annotations={annotations}
+      onAnnotationClick={onAnnotationClick}
     />
   );
 }

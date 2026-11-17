@@ -187,6 +187,7 @@ function GoogleAdsReport({ websiteId }: { websiteId: string }) {
             >
               {daily.data && (
                 <GoogleAdsChart
+                  websiteId={websiteId}
                   rows={daily.data.rows}
                   metric={performanceMetric}
                   currency={currency}
@@ -224,6 +225,7 @@ function GoogleAdsReport({ websiteId }: { websiteId: string }) {
             >
               {daily.data && (
                 <GoogleAdsChart
+                  websiteId={websiteId}
                   rows={daily.data.rows}
                   metric={conversionMetric}
                   currency={currency}
