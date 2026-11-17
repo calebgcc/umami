@@ -101,6 +101,7 @@ export function Revenue({ websiteId, startDate, endDate, unit }: RevenueProps) {
                 </Select>
               </Row>
               <RevenueChart
+                websiteId={websiteId}
                 data={data.chart}
                 mode={revenueChartMode}
                 unit={unit}

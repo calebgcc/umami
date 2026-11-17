@@ -121,6 +121,7 @@ function SearchConsoleReport({ websiteId }: { websiteId: string }) {
             >
               {daily.data && (
                 <SearchConsoleChart
+                  websiteId={websiteId}
                   rows={daily.data.rows}
                   minDate={startDate}
                   maxDate={endDate}

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useMemo } from 'react';
 import { BarChart } from '@/components/charts/BarChart';
 import type { SearchConsoleRow } from '@/components/hooks';
-import { useLocale } from '@/components/hooks';
+import { useChartAnnotations, useLocale } from '@/components/hooks';
 import { renderDateLabels } from '@/lib/charts';
 import { getThemeColors } from '@/lib/colors';
 import { DATE_FUNCTIONS, generateTimeSeries } from '@/lib/date';
@@ -12,6 +12,8 @@ import { DATE_FUNCTIONS, generateTimeSeries } from '@/lib/date';
 type DailyRow = Pick<SearchConsoleRow, 'key' | 'clicks' | 'impressions'>;
 
 export interface SearchConsoleChartProps {
+  /** Shows the website's annotations on the chart. */
+  websiteId?: string;
   /** One row per day, keyed by YYYY-MM-DD. */
   rows: DailyRow[];
   minDate: Date;
@@ -33,12 +35,19 @@ function bucket(rows: DailyRow[], unit: string, metric: 'clicks' | 'impressions'
   return [...totals].map(([x, y]) => ({ x, y }));
 }
 
-export function SearchConsoleChart({ rows, minDate, maxDate, unit }: SearchConsoleChartProps) {
+export function SearchConsoleChart({
+  websiteId,
+  rows,
+  minDate,
+  maxDate,
+  unit,
+}: SearchConsoleChartProps) {
   const t = useTranslations('searchConsole');
   const { theme } = useTheme();
   const { locale, dateLocale } = useLocale();
   const { colors } = useMemo(() => getThemeColors(theme), [theme]);
   const chartUnit = unit === 'minute' || unit === 'hour' ? 'day' : unit;
+  const { annotations, onAnnotationClick } = useChartAnnotations(websiteId, chartUnit);
 
   const chartData: any = useMemo(
     () => ({
@@ -91,6 +100,8 @@ export function SearchConsoleChart({ rows, minDate, maxDate, unit }: SearchConso
       maxDate={maxDate}
       renderXLabel={renderXLabel}
       height="400px"
+      annotations={annotations}
+      onAnnotationClick={onAnnotationClick}
     />
   );
 }

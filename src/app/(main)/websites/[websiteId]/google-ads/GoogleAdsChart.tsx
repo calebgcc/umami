@@ -4,13 +4,15 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useMemo } from 'react';
 import { BarChart } from '@/components/charts/BarChart';
 import type { GoogleAdsRow } from '@/components/hooks';
-import { useLocale } from '@/components/hooks';
+import { useChartAnnotations, useLocale } from '@/components/hooks';
 import { renderDateLabels } from '@/lib/charts';
 import { getThemeColors } from '@/lib/colors';
 import { DATE_FUNCTIONS, generateTimeSeries } from '@/lib/date';
 import { formatMetric, GOOGLE_ADS_METRICS, type GoogleAdsMetric, sumRows } from './format';
 
 export interface GoogleAdsChartProps {
+  /** Shows the website's annotations on the chart. */
+  websiteId?: string;
   /** One row per day, keyed by YYYY-MM-DD. */
   rows: GoogleAdsRow[];
   metric: GoogleAdsMetric;
@@ -42,6 +44,7 @@ function bucket(rows: GoogleAdsRow[], unit: string, metric: GoogleAdsMetric) {
 }
 
 export function GoogleAdsChart({
+  websiteId,
   rows,
   metric,
   currency,
@@ -54,6 +57,7 @@ export function GoogleAdsChart({
   const { locale, dateLocale } = useLocale();
   const { colors } = useMemo(() => getThemeColors(theme), [theme]);
   const chartUnit = unit === 'minute' || unit === 'hour' ? 'day' : unit;
+  const { annotations, onAnnotationClick } = useChartAnnotations(websiteId, chartUnit);
   const isCount = GOOGLE_ADS_METRICS[metric].format === 'number';
 
   const chartData: any = useMemo(
@@ -98,6 +102,8 @@ export function GoogleAdsChart({
       renderYLabel={isCount ? undefined : renderYLabel}
       formatValue={formatValue}
       height="400px"
+      annotations={annotations}
+      onAnnotationClick={onAnnotationClick}
     />
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 import { Grid } from '@umami/react-zen';
+import { useState } from 'react';
 import { firstBy } from 'thenby';
 import { GridRow } from '@/components/common/GridRow';
 import { PageBody } from '@/components/common/PageBody';
@@ -12,10 +13,12 @@ import { RealtimeCountries } from './RealtimeCountries';
 import { RealtimeHeader } from './RealtimeHeader';
 import { RealtimeLog } from './RealtimeLog';
 import { RealtimePaths } from './RealtimePaths';
+import { RealtimePauseButton } from './RealtimePauseButton';
 import { RealtimeReferrers } from './RealtimeReferrers';
 
 export function RealtimePage({ websiteId }: { websiteId: string }) {
-  const { data, isLoading, error } = useRealtimeQuery(websiteId);
+  const [isPaused, setIsPaused] = useState(false);
+  const { data, isLoading, error } = useRealtimeQuery(websiteId, { paused: isPaused });
   const { isMobile } = useMobile();
 
   if (isLoading || error) {
@@ -30,6 +33,7 @@ export function RealtimePage({ websiteId }: { websiteId: string }) {
 
   return (
     <Grid gap="3">
+      <RealtimePauseButton isPaused={isPaused} onChange={setIsPaused} />
       <RealtimeHeader data={data} />
       <Panel>
         <RealtimeChart data={data} unit="minute" />
